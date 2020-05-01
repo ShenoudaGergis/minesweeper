@@ -25,7 +25,6 @@ function Game(canvasID = "jesus") {
 Game.prototype.resizeCanvas = function() {
     this.canvas.width  = this.cols * this.cellWidth;
     this.canvas.height = this.rows * this.cellWidth + 50;
-    // this.canvas.style.border = "1px solid";
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -42,7 +41,7 @@ Game.prototype.clickEvent = function() {
         if(this.gameEnded.ended) return;
         let mousePos = getMousePos(this.canvas, event);
         if(mousePos.y < this.rows * this.cellWidth) {
-            console.log(mousePos);
+            console.info(mousePos);
             let clickedCell = this.getCellFromCoor(mousePos.x , mousePos.y);
             if(!clickedCell.shown) this.processClickedCell(clickedCell);                
         }
@@ -148,8 +147,7 @@ Game.prototype.processClickedCell = function(cell) {
         this.assets.selectSound.clone().play();
 
     }
-    // if(this.rows * this.cols - this.shownCells === this.bombsLocation.length) {
-    if(this.shownCells > 5) {
+    if(this.rows * this.cols - this.shownCells === this.bombsLocation.length) {
         this.gameEnded.ended = true;
         this.gameEnded.state = "success";
         this.assets.winSound.clone().play();
