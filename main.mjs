@@ -6,6 +6,7 @@ function Game(canvasID = "jesus") {
     this.canvas    = document.getElementById(canvasID);
     this.context   = this.canvas.getContext("2d");
     this.timer     = null;
+    this.gameEnded = {ended : false , state : null};
     this.time      = 0;
     this.rows      = 20;
     this.cols      = 20;
@@ -24,7 +25,7 @@ function Game(canvasID = "jesus") {
 Game.prototype.resizeCanvas = function() {
     this.canvas.width  = this.cols * this.cellWidth;
     this.canvas.height = this.rows * this.cellWidth + 50;
-    this.canvas.style.border = "1px solid";
+    // this.canvas.style.border = "1px solid";
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -38,13 +39,15 @@ Game.prototype.clickEvent = function() {
         };
     }
     this.canvas.onclick = ((event) => {
+        if(this.gameEnded.ended) return;
         let mousePos = getMousePos(this.canvas, event);
-        console.log(mousePos);
         if(mousePos.y < this.rows * this.cellWidth) {
+            console.log(mousePos);
             let clickedCell = this.getCellFromCoor(mousePos.x , mousePos.y);
             if(!clickedCell.shown) this.processClickedCell(clickedCell);                
         }
     });
+    
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -131,12 +134,27 @@ Game.prototype.processClickedCell = function(cell) {
     if(cell.value === -1) {
         this.shownCells++;
         this.showAllGrid();
+        this.gameEnded.ended = true;
+        this.gameEnded.state = "fail";
+        this.assets.failSound.clone().play();
+
     } else if(cell.value === 0) {
         this.floodFill(cell);
+        this.assets.selectSound.clone().play();
+
     } else {
         this.shownCells++;
         cell.shown = true;
+        this.assets.selectSound.clone().play();
+
     }
+    // if(this.rows * this.cols - this.shownCells === this.bombsLocation.length) {
+    if(this.shownCells > 5) {
+        this.gameEnded.ended = true;
+        this.gameEnded.state = "success";
+        this.assets.winSound.clone().play();
+    }
+
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -165,25 +183,31 @@ Game.prototype.clearFrame = function() {
 //-------------------------------------------------------------------------------------------------
 
 Game.prototype.showGameInfo = function() {
-    this.context.font = "10px atari1Font";
-    this.context.fillStyle = "#000";
+    if(this.gameEnded.ended) {
+        if(this.gameEnded.state === "success") this.context.fillStyle = "#4bb543";
+        else this.context.fillStyle = "#a64452";
+        this.context.fillRect(0 , this.canvas.height - 50 , this.canvas.width , 50);    
+        this.context.fillStyle = "#fff";
+
+    } else this.context.fillStyle = "#000";
+
+    this.context.font = "10px atari2Font";
     this.context.fillText(`Time : ${util.toTime(this.time)}` , 10 , this.canvas.height - 20);
     let text = `Bombs : ${this.shownCells} ${this.bombsLocation.length} ${this.rows * this.cols}`;
     this.context.fillText(text , this.canvas.width - this.context.measureText(text).width - 10 , this.canvas.height - 20);
-};
 
-//-------------------------------------------------------------------------------------------------
-
-Game.prototype.checkGameEnds = function() {
-    if(this.rows * this.cols - this.shownCells === this.bombsLocation.length) {
-        console.log("won");
-    }
+    this.context.beginPath();
+    this.context.lineWidth = 2;
+    this.context.moveTo(0 , this.canvas.height);
+    this.context.lineTo(this.canvas.width , this.canvas.height);
+    this.context.stroke();
 };
 
 //-------------------------------------------------------------------------------------------------
 
 Game.prototype.begin = function() {    
     this.timer = setInterval(() => {
+        if(this.gameEnded.ended) {clearInterval(this.timer);this.timer = null;}
         this.clearFrame();
         this.drawFrame();
         this.time += 40;

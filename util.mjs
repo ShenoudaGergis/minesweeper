@@ -7,15 +7,22 @@ let util = {
 
     assets : {
         "image" : {
-            // "tankImage" : {
-            //     url  : "./images/tank.png" ,
-            // }
+
         } ,
     
         "sound" : {
-            // "tankDestroySound" : {
-            //     url : "./sounds/tankExplosion.mp3" ,
-            // }
+            "selectSound" : {
+                url : "./sounds/select.mp3" ,
+            } ,
+
+            "winSound" : {
+                url : "./sounds/win.mp3" ,
+            } ,
+
+            "failSound" : {
+                url : "./sounds/fail.mp3" ,
+            } ,
+
         } ,
     
         "font" : {
