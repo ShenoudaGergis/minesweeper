@@ -36,4 +36,14 @@ game.begin().then((r) => {
 });
 ```
 
-which return a promise with assets array as its value 
+which return a promise with assets array as its value.
+
+`Game` constructor takes two arguments :-
+
+1. `canvasId` : a string value of canvas ID, the default value is `jesus`
+2. `options`  : an object of options with keys :-
+
+   * `rows` : specify the number of rows, the default value is `20`
+   * `cols` : specify the number of cols, the default value is `20`
+   * `cellWidth` : specify the cell length, the default value is `28`
+   * `prop` : specify the game difficulty, which is any value between 1 to 100, the default value is `20`
