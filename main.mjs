@@ -2,7 +2,7 @@ import Cell from "./cell.mjs";
 import Sound from "./sound.mjs";
 import util from "./util.mjs";
 
-function Game(canvasID = "jesus" , {rows = 20, cols = 20, cellWidth = 28 , prop = 30} = {}) {
+function Game(canvasID = "jesus" , {rows = 20, cols = 20, cellWidth = 28 , prop = 20} = {}) {
     this.canvas    = document.getElementById(canvasID);
     this.context   = this.canvas.getContext("2d");
     this.timer     = null;
@@ -217,33 +217,40 @@ Game.prototype.showGameInfo = function() {
 
 //-------------------------------------------------------------------------------------------------
 
-Game.prototype.begin = function() {    
-    this.timer = setInterval(() => {
-        if(this.gameEnded.ended) {clearInterval(this.timer);this.timer = null;}
-        this.clearFrame();
-        this.drawFrame();
-        this.time += 40;
-    } , 40);
+Game.prototype.begin = function() {
+
+    return util.loadAssets().then((results) => {
+        results.forEach(({label , name , dom}) => {
+            if(label === "image") {
+                this.assets[name] = dom;
+            }
+            if(label === "sound") {
+                this.assets[name] = new Sound(dom);
+            }
+            if(label === "font") {
+                document.fonts.add(dom);
+            }
+        });
+        this.timer = setInterval(() => {
+            if(this.gameEnded.ended) {clearInterval(this.timer);this.timer = null;}
+            this.clearFrame();
+            this.drawFrame();
+            this.time += 40;
+        } , 40);
+        return results;    
+    } , (results) => {
+        throw results;
+    });
 };
 
 //-------------------------------------------------------------------------------------------------
 
 
-util.loadAssets().then((results) => {
-    let game = new Game();
-    results.forEach(({label , name , dom}) => {
-        if(label === "image") {
-            game.assets[name] = dom;
-        }
-        if(label === "sound") {
-            game.assets[name] = new Sound(dom);
-        }
-        if(label === "font") {
-            document.fonts.add(dom);
-        }
-    });
-    game.begin();    
 
-} , (results) => {
-    console.error(results);
+let game = new Game();
+
+game.begin().then((r) => {
+    console.log(r);
+} , (e) => {
+    console.error(e);
 });
