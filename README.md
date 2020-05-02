@@ -20,3 +20,20 @@ at the lower part of the canvas you can see the time passed, and info about bomb
 1. the first number is the number of uncovered cells
 2. the second number is the number of bombs
 3. the third number is the total number of cells
+
+
+### Using
+
+to use this game, first you have to make `Game` object, then use `begin` method 
+
+```javascript
+let game = new Game();
+
+game.begin().then((r) => {
+    console.log(r);
+} , (e) => {
+    console.error(e);
+});
+```
+
+which return a promise with assets array as its value 
