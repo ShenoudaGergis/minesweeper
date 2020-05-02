@@ -7,15 +7,22 @@ export default function Cell(canvas , x , y , width) {
     this.value   = 0;
     this.shown   = false; 
     this.bomb    = "\u{1F311}";
+    this.marked  = false;
 }
 
 Cell.prototype.draw = function() {
     this.context.lineWidth = 0.3;
     this.context.font = "12px atari2Font";
     if(!this.shown) {
-        this.context.fillStyle = "#f2e4e4";
-        this.context.fillRect(this.x , this.y , this.width , this.width);
-        this.context.strokeRect(this.x , this.y , this.width , this.width);
+        if(this.marked) {
+            this.context.fillStyle = "#2e452b";
+            this.context.fillRect(this.x , this.y , this.width , this.width);
+            this.context.strokeRect(this.x , this.y , this.width , this.width);
+        } else {
+            this.context.fillStyle = "#f2e4e4";
+            this.context.fillRect(this.x , this.y , this.width , this.width);
+            this.context.strokeRect(this.x , this.y , this.width , this.width);
+        }
     } else {
         let dotX = Math.floor((this.width - 13) / 2 + this.x);
         let dotY = Math.floor((this.width + 13) / 2 + this.y);

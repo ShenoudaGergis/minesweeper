@@ -46,7 +46,20 @@ Game.prototype.clickEvent = function() {
             if(!clickedCell.shown) this.processClickedCell(clickedCell);                
         }
     });
-    
+ 
+    this.canvas.oncontextmenu = (event) => {
+        event.preventDefault();
+        if(this.gameEnded.ended) return;
+        let mousePos = getMousePos(this.canvas, event);
+        if(mousePos.y < this.rows * this.cellWidth) {
+            console.info(mousePos);
+            let clickedCell = this.getCellFromCoor(mousePos.x , mousePos.y);
+            if(!clickedCell.shown) {
+                if(!clickedCell.marked) clickedCell.marked = true;
+                else clickedCell.marked = false;
+            }                
+        }
+    };
 };
 
 //-------------------------------------------------------------------------------------------------
