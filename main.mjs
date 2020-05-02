@@ -2,15 +2,16 @@ import Cell from "./cell.mjs";
 import Sound from "./sound.mjs";
 import util from "./util.mjs";
 
-function Game(canvasID = "jesus") {
+function Game(canvasID = "jesus" , {rows = 20, cols = 20, cellWidth = 28 , prop = 30} = {}) {
     this.canvas    = document.getElementById(canvasID);
     this.context   = this.canvas.getContext("2d");
     this.timer     = null;
+    this.prop      = prop;
     this.gameEnded = {ended : false , state : null};
     this.time      = 0;
-    this.rows      = 20;
-    this.cols      = 20;
-    this.cellWidth = 28;
+    this.rows      = rows;
+    this.cols      = cols;
+    this.cellWidth = cellWidth;
     this.bombsLocation = [];
     this.shownCells    = 0;
     this.grid          = [];
@@ -78,7 +79,7 @@ Game.prototype.generateGrid = function() {
         for(let j = 0;j < this.cols;j++) {
             let x = j * this.cellWidth , y = i * this.cellWidth;
             let newCell = new Cell(this.canvas , x , y , this.cellWidth);
-            if(util.generateRandomNumber(0 , 300) < 50) {
+            if(util.generateRandomNumber(0 , 100) < this.prop) {
                 newCell.value = -1;
                 this.bombsLocation.push(newCell);
             }
