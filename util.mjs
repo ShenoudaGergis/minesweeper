@@ -7,7 +7,9 @@ let util = {
 
     assets : {
         "image" : {
-
+            "flagImage" : {
+                url : "./images/flag.png"
+            }
         } ,
     
         "sound" : {

@@ -181,7 +181,7 @@ Game.prototype.showAllGrid = function() {
 
 Game.prototype.drawFrame = function() {
     this.grid.forEach((cell) => {
-        cell.draw();
+        cell.draw(this.assets.flagImage);
     });
     this.showGameInfo();
 };
