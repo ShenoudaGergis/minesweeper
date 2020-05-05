@@ -247,7 +247,7 @@ Game.prototype.begin = function() {
 
 
 
-let game = new Game();
+let game = new Game("jesus" , {rows : 10 , cols : 10 , cellWidth : 30 , prop : 15});
 
 game.begin().then((r) => {
     console.log(r);
